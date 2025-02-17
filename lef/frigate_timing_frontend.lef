@@ -12,7 +12,7 @@ MACRO frigate_timing_frontend
     ANTENNADIFFAREA 0.405000 ;
     PORT
       LAYER met2 ;
-        RECT 45.000 0.000 46.500 2.000 ;
+        RECT 45.000 1.000 46.500 2.000 ;
     END
   END lsxo_xin
   PIN lsxo_xout
@@ -20,7 +20,7 @@ MACRO frigate_timing_frontend
     ANTENNADIFFAREA 20.125000 ;
     PORT
       LAYER met2 ;
-        RECT 155.000 0.000 156.500 2.000 ;
+        RECT 155.000 1.000 156.500 2.000 ;
     END
   END lsxo_xout
   PIN hsxo_xin
@@ -28,14 +28,14 @@ MACRO frigate_timing_frontend
     ANTENNADIFFAREA 113.155396 ;
     PORT
       LAYER met2 ;
-        RECT 265.000 0.000 266.500 2.580 ;
+        RECT 265.000 1.000 266.500 2.580 ;
     END
   END hsxo_xin
   PIN hsxo_xout
     ANTENNADIFFAREA 157.759995 ;
     PORT
       LAYER met2 ;
-        RECT 375.000 0.000 376.500 2.580 ;
+        RECT 375.000 1.000 376.500 2.580 ;
     END
   END hsxo_xout
   PIN rc_osc_16M_ena
@@ -117,7 +117,7 @@ MACRO frigate_timing_frontend
     ANTENNADIFFAREA 5.887000 ;
     PORT
       LAYER met5 ;
-        RECT 407.025 0.000 421.000 1.600 ;
+        RECT 407.025 1.000 421.000 1.600 ;
     END
   END lsxo_ibias
   PIN hsxo_ibias
