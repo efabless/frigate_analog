@@ -521,8 +521,14 @@ module frigate_analog (
    // Analog connections to padframe pins
    inout gpio1_0,	// DAC refL
    inout gpio1_1,	// vbg and DAC refH
+
+`ifdef COCOTB_SIM
+   input real gpio1_2,	// iDAC, ibias test, adc1
+   input real gpio1_3,	// iDAC, adc0
+`else
    inout gpio1_2,	// iDAC, ibias test, adc1
    inout gpio1_3,	// iDAC, adc0
+`endif
    inout gpio1_4,	// comp_n
    inout gpio1_5,	// comp_p
    inout gpio1_6,	// ulpcomp_n
@@ -546,9 +552,13 @@ module frigate_analog (
    inout gpio3_6,	// right_lp_opamp
    inout gpio3_7,	// right_hgbw_opamp
 
+`ifdef COCOTB_SIM
+   input real analog0,	// (many connections)
+   input real analog1,	// (many connections)
+`else
    inout analog0,	// (many connections)
    inout analog1,	// (many connections)
-
+`endif
    inout gpio4_0,	// left_hgbw_opamp
    inout gpio4_1,	// left_lp_opamp
    inout gpio4_2,	// right_lp_opamp
@@ -571,10 +581,17 @@ module frigate_analog (
    inout gpio6_1,	// ulpcomp_n
    inout gpio6_2,	// comp_p
    inout gpio6_3,	// comp_n
+`ifdef COCOTB_SIM
+   input real gpio6_4,	// adc0
+   input real gpio6_5,	// adc1
+   input real gpio6_6,	// ADC refH
+   input real gpio6_7,	// ADC refL
+`else
    inout gpio6_4,	// adc0
    inout gpio6_5,	// adc1
    inout gpio6_6,	// ADC refH
    inout gpio6_7,	// ADC refL
+`endif
 
    inout sio0,		// (many connections)
    inout sio1,		// (many connections)
@@ -595,5 +612,85 @@ module frigate_analog (
 );
 
 /* Currently a black-box placeholder */
+`ifdef COCOTB_SIM
+
+  real adc_refh;
+  assign adc_refh = (adc_refh_to_gpio6_6 == 2'b01) ? gpio6_6 : 0.0;
+
+  real adc_refl;
+  assign adc_refl = (adc_refl_to_gpio6_7 == 2'b01) ? gpio6_7 : 0.0;
+
+  real adc0_in;
+  assign adc0_in =  (adc0_to_gpio6_4 == 2'b01) ? gpio6_4 : 
+                    (adc0_to_gpio1_3 == 2'b01) ? gpio1_3 :
+                    (adc0_to_analog1 == 1'b1) && (analog1_connect == 2'b01) ? analog1 :
+                    0.0;
+
+
+  real adc1_in;
+  assign adc1_in =  (adc1_to_gpio6_5 == 2'b01) ? gpio6_5 : 
+                    (adc1_to_gpio1_2 == 2'b01) ? gpio1_2 :
+                    (adc1_to_analog0 == 1'b1) && (analog0_connect == 2'b01) ? analog0 :
+                    0.0;
+
+
+  frigate_adc_12_bit ADC0_ANA (
+`ifdef USE_POWER_PINS
+      .VDD (vddio),
+      .VSS (vssio),
+      .DVDD(vccd0),
+      .DVSS(vssd0),
+`endif
+      .VH  (adc_refh),
+      .VL  (adc_refl),
+      .in0 (adc0_in),
+      .HOLD(adc0_hold),
+      .DATA(adc0_dac_val),
+      .CMP (adc0_comp_out),
+      .RST (adc0_reset),
+      .EN  (adc0_ena)
+  );
+
+  frigate_adc_12_bit ADC1_ANA (
+`ifdef USE_POWER_PINS
+      .VDD (vddio),
+      .VSS (vssio),
+      .DVDD(vccd0),
+      .DVSS(vssd0),
+`endif
+      .VH  (adc_refh),
+      .VL  (adc_refl),
+      .in0 (adc1_in),
+      .HOLD(adc1_hold),
+      .DATA(adc1_dac_val),
+      .CMP (adc1_comp_out),
+      .RST (adc1_reset),
+      .EN  (adc1_ena)
+  );
+
+  // Power-on-reset circuit
+  simple_por por_0 (
+`ifdef USE_POWER_PINS
+      .vdd3v3(vddio),
+      .vdd1v8(vccd0),
+      .vss3v3(vssio),
+      .vss1v8(vssd0),
+`endif
+      .porb_h(porb_h[0]),
+      .porb_l(porb),
+      .por_l (por)
+  );
+  simple_por por_1 (
+`ifdef USE_POWER_PINS
+      .vdd3v3(vddio),
+      .vdd1v8(vccd0),
+      .vss3v3(vssio),
+      .vss1v8(vssd0),
+`endif
+      .porb_h(porb_h[1]),
+      .porb_l(),
+      .por_l ()
+  );
+`endif  // COCOTB_SIM
 
 endmodule	// frigate_analog
