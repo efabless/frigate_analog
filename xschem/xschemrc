@@ -1,3 +1,20 @@
+# Set default PDK_ROOT
+if { ![info exists env(PDK_ROOT)] } {
+  puts stderr "Warning: PDK_ROOT env. var. not found or empty, trying to find an open_pdks install"
+  if {[file isdir /usr/share/pdk]} {set ::env(PDK_ROOT) /usr/share/pdk
+  } elseif {[file isdir /usr/local/share/pdk]} {set ::env(PDK_ROOT) /usr/local/share/pdk
+  } elseif {[file isdir $env(HOME)/share/pdk]} {set ::env(PDK_ROOT) $env(HOME)/share/pdk
+  } elseif {[file isdir $env(HOME)/.volare]} {set ::env(PDK_ROOT) $env(HOME)/.volare
+  } else {
+    puts stderr {No open_pdks installation found, set PDK_ROOT env. var. and restart xschem}
+  }
+}
+
+# Set default PDK
+if { ![info exists env(PDK)] } {
+  set ::env(PDK) sky130A
+}
+
 # Source the PDK xschemrc file
 if {![info exists PDK]} {
     source $env(PDK_ROOT)/$env(PDK)/libs.tech/xschem/xschemrc
@@ -6,22 +23,27 @@ if {![info exists PDK]} {
 # Add current directory to xschem library path
 append XSCHEM_LIBRARY_PATH :[file dirname [info script]]
 
-# Source the dependencies xschemrc files
-source [file dirname [info script]]/../dependencies/sky130_ajc_ip__brownout/xschem/xschemrc
-source [file dirname [info script]]/../dependencies/sky130_ak_ip__cmos_vref/xschem/xschemrc
-source [file dirname [info script]]/../dependencies/sky130_ak_ip__comparator/xschem/xschemrc
-source [file dirname [info script]]/../dependencies/sky130_am_ip__ldo_01v8/xschem/xschemrc
-source [file dirname [info script]]/../dependencies/sky130_cw_ip/xschem/xschemrc
-source [file dirname [info script]]/../dependencies/sky130_ef_ip__analog_switches/xschem/xschemrc
-source [file dirname [info script]]/../dependencies/sky130_ef_ip__biasgen/xschem/xschemrc
-source [file dirname [info script]]/../dependencies/sky130_ef_ip__ccomp3v/xschem/xschemrc
-source [file dirname [info script]]/../dependencies/sky130_ef_ip__cdac3v_12bit/xschem/xschemrc
-source [file dirname [info script]]/../dependencies/sky130_ef_ip__rdac3v_8bit/xschem/xschemrc
-source [file dirname [info script]]/../dependencies/sky130_ef_ip__rheostat_8bit/xschem/xschemrc
-source [file dirname [info script]]/../dependencies/sky130_pa_ip__instramp/xschem/xschemrc
-source [file dirname [info script]]/../dependencies/sky130_icrg_ip__ulpcomp/xschem/xschemrc
-source [file dirname [info script]]/../dependencies/sky130_iic_ip__audiodac_lite/xschem/xschemrc
-source [file dirname [info script]]/../dependencies/sky130_od_ip__tempsensor/xschem/xschemrc
-source [file dirname [info script]]/../dependencies/sky130_sw_ip__por/xschem/xschemrc
-source [file dirname [info script]]/../dependencies/sky130_td_ip__opamp_hp/xschem/xschemrc
-source [file dirname [info script]]/../dependencies/sky130_vbl_ip__overvoltage/xschem/xschemrc
+# Source the ip xschemrc files
+source [file dirname [info script]]/../ip/sky130_ajc_ip__brownout/xschem/xschemrc
+source [file dirname [info script]]/../ip/sky130_ak_ip__cmos_vref/xschem/xschemrc
+source [file dirname [info script]]/../ip/sky130_ak_ip__comparator/xschem/xschemrc
+source [file dirname [info script]]/../ip/sky130_am_ip__ldo_01v8/xschem/xschemrc
+source [file dirname [info script]]/../ip/sky130_cw_ip/xschem/xschemrc
+source [file dirname [info script]]/../ip/sky130_ef_ip__analog_switches/xschem/xschemrc
+source [file dirname [info script]]/../ip/sky130_ef_ip__biasgen/xschem/xschemrc
+source [file dirname [info script]]/../ip/sky130_ef_ip__ccomp3v/xschem/xschemrc
+source [file dirname [info script]]/../ip/sky130_ef_ip__cdac3v_12bit/xschem/xschemrc
+source [file dirname [info script]]/../ip/sky130_ef_ip__rdac3v_8bit/xschem/xschemrc
+source [file dirname [info script]]/../ip/sky130_ef_ip__rheostat_8bit/xschem/xschemrc
+source [file dirname [info script]]/../ip/sky130_pa_ip__instramp/xschem/xschemrc
+source [file dirname [info script]]/../ip/sky130_icrg_ip__ulpcomp/xschem/xschemrc
+source [file dirname [info script]]/../ip/sky130_iic_ip__audiodac_lite/xschem/xschemrc
+source [file dirname [info script]]/../ip/sky130_od_ip__tempsensor/xschem/xschemrc
+source [file dirname [info script]]/../ip/sky130_sw_ip__por/xschem/xschemrc
+source [file dirname [info script]]/../ip/sky130_td_ip__opamp_hp/xschem/xschemrc
+source [file dirname [info script]]/../ip/sky130_vbl_ip__overvoltage/xschem/xschemrc
+source [file dirname [info script]]/../ip/sky130_ef_ip__rc_osc_16M/xschem/xschemrc
+source [file dirname [info script]]/../ip/sky130_ef_ip__rc_osc_500k/xschem/xschemrc
+source [file dirname [info script]]/../ip/sky130_ht_ip__hsxo_cpz1/xschem/xschemrc
+source [file dirname [info script]]/../ip/sky130_be_ip__lsxo/xschem/xschemrc
+source [file dirname [info script]]/../ip/sky130_ef_ip__adc3v_12bit/xschem/xschemrc
